@@ -2,7 +2,7 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Card + Music + Spin</title>
+    <title>TUHY</title>
 
     <style>
       body {
@@ -49,17 +49,13 @@
         object-fit: cover;
       }
 
-      /* Mặt sau (hiện ban đầu) */
       .card-front {
         transform: rotateY(0deg);
       }
-
-      /* Mặt trước */
       .card-back {
         transform: rotateY(180deg);
       }
 
-      /* Spin */
       @keyframes spinCard {
         from {
           transform: rotateY(180deg);
@@ -74,23 +70,25 @@
   <body>
     <div class="card-container" onclick="revealCard()">
       <div class="card" id="card">
-        <!-- BACK -->
         <div class="card-face card-front">
-          <img src="1.png" alt="Card Back" />
+          <img src="1.png" />
         </div>
 
-        <!-- FRONT -->
         <div class="card-face card-back">
-          <img src="2.png" alt="Card Front" />
+          <img id="frontImg" src="2.png" />
         </div>
       </div>
     </div>
 
-    <!-- Nhạc -->
     <audio id="music" src="music.mp3"></audio>
 
     <script>
       let triggered = false;
+
+      // Danh sách ảnh để đổi
+      const images = ["2.png", "3.png"];
+
+      let index = 0;
 
       function revealCard() {
         if (triggered) return;
@@ -99,18 +97,35 @@
         const card = document.getElementById("card");
         const music = document.getElementById("music");
 
-        // 1. Phát nhạc (browser chỉ cho phép sau khi user click)
-        music.play().catch(() => {
-          console.log("Trình duyệt chặn autoplay, nhưng click rồi thì OK.");
-        });
+        music.play().catch(() => {});
 
-        // 2. Lật bài
+        // Lật
         card.style.transform = "rotateY(180deg)";
 
-        // 3. Sau 3s → spin
+        // Sau 3s → spin + bắt đầu đổi ảnh
         setTimeout(() => {
           card.classList.add("spin");
-        }, 3000);
+          startChangingImages();
+        }, 2400);
+      }
+
+      function startChangingImages() {
+        const img = document.getElementById("frontImg");
+
+        function changeImage() {
+          index = (index + 1) % images.length;
+          img.src = images[index];
+        }
+
+        // 👉 Lần đầu: chạy sau nửa vòng (2s)
+        setTimeout(() => {
+          changeImage();
+
+          // 👉 Sau đó mới lặp đều
+          setInterval(() => {
+            changeImage();
+          }, 4000);
+        }, 2000);
       }
     </script>
   </body>
