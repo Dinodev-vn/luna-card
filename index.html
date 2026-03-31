@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Card + Music + Spin</title>
+
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .card-container {
+        width: 300px;
+        height: 500px;
+        perspective: 1200px;
+        cursor: pointer;
+      }
+
+      .card {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotateY(0deg);
+        transition: transform 0.8s ease-in-out;
+      }
+
+      .card.spin {
+        animation: spinCard 4s linear infinite;
+      }
+
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .card-face img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Mặt sau (hiện ban đầu) */
+      .card-front {
+        transform: rotateY(0deg);
+      }
+
+      /* Mặt trước */
+      .card-back {
+        transform: rotateY(180deg);
+      }
+
+      /* Spin */
+      @keyframes spinCard {
+        from {
+          transform: rotateY(180deg);
+        }
+        to {
+          transform: rotateY(540deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card-container" onclick="revealCard()">
+      <div class="card" id="card">
+        <!-- BACK -->
+        <div class="card-face card-front">
+          <img src="1.png" alt="Card Back" />
+        </div>
+
+        <!-- FRONT -->
+        <div class="card-face card-back">
+          <img src="2.png" alt="Card Front" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Nhạc -->
+    <audio id="music" src="music.mp3"></audio>
+
+    <script>
+      let triggered = false;
+
+      function revealCard() {
+        if (triggered) return;
+        triggered = true;
+
+        const card = document.getElementById("card");
+        const music = document.getElementById("music");
+
+        // 1. Phát nhạc (browser chỉ cho phép sau khi user click)
+        music.play().catch(() => {
+          console.log("Trình duyệt chặn autoplay, nhưng click rồi thì OK.");
+        });
+
+        // 2. Lật bài
+        card.style.transform = "rotateY(180deg)";
+
+        // 3. Sau 3s → spin
+        setTimeout(() => {
+          card.classList.add("spin");
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    background-image: url("bg4.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+  }
+</style>
+
+<script>
+  const audio = document.getElementById("music");
+  audio.volume = 0.1;
+</script>
